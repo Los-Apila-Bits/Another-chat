@@ -20,8 +20,8 @@ public class Cliente {
 		
 		try {
 			socket = new Socket(ip, puerto);
-			salida = new DataOutputStream(salida);
-			entrada = new DataInputStream(entrada);
+			salida = new DataOutputStream(socket.getOutputStream());
+			entrada = new DataInputStream(socket.getInputStream());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

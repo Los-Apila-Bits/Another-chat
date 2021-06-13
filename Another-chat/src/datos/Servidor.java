@@ -26,13 +26,13 @@ public class Servidor {
 			while(true) {
 				socket = server.accept();
 				sockets.add(socket);
-				new HiloServidor(socket, sockets);
+				new HiloServidor(socket, sockets).start();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	public static void main(String[] args) {
-		new Servidor(5000).ejecutar();
+		new Servidor(20).ejecutar();
 	}
 }

@@ -8,7 +8,7 @@ import Ventanas.JChatCliente;
 public class HiloCliente extends Thread{
 	private DataInputStream entrada;
 	private JChatCliente ventana;
-	public HiloCliente(DataInputStream entrada, JChatCliente Ventana) {
+	public HiloCliente(DataInputStream entrada, JChatCliente ventana) {
 		this.entrada = entrada;
 		this.ventana = ventana;
 	}
