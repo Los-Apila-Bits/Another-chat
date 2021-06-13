@@ -19,7 +19,7 @@ public class Cliente {
 		this.ip = ip;
 		
 		try {
-			socket = new Socket(ip, puerto);
+			socket = new Socket(this.ip, this.puerto);
 			salida = new DataOutputStream(socket.getOutputStream());
 			entrada = new DataInputStream(socket.getInputStream());
 		} catch (IOException e) {
