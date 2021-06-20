@@ -23,6 +23,10 @@ import javax.swing.JOptionPane;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
@@ -31,7 +35,7 @@ public class JChatCliente extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private Cliente cliente;
+	public Cliente cliente;
 	private String usuario;
 	private JTextField textField;
 	private JButton btnEnviar;
@@ -40,22 +44,23 @@ public class JChatCliente extends JFrame {
 	private JMenuItem mntmConectar;
 	private JMenu mnOpciones;
 	private JScrollPane scrollPane;
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					JChatCliente frame = new JChatCliente();
-					frame.setTitle("Chat");
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					JChatCliente frame = new JChatCliente();
+//					frame.setTitle("Chat");
+//					frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
+
 
 	public JChatCliente() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -71,11 +76,11 @@ public class JChatCliente extends JFrame {
 				textField.setText("");
 			}
 		});
-		textField.setEditable(false);
+		//textField.setEditable(false);
 		textField.setColumns(10);
 		
 		btnEnviar = new JButton("Enviar");
-		btnEnviar.setEnabled(false);
+		//btnEnviar.setEnabled(false);
 		btnEnviar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				enviarMsj();
@@ -97,7 +102,7 @@ public class JChatCliente extends JFrame {
 		mntmConectar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String nombre = JOptionPane.showInputDialog("Ingrese nombre de usuario");
-				cliente = new Cliente(20,"localhost");
+				cliente = new Cliente(9001,"localhost");
 				cliente.inicializarHiloCliente(iniciar());
 				usuario = nombre;
 				btnEnviar.setEnabled(true);
@@ -138,8 +143,11 @@ public class JChatCliente extends JFrame {
 	
 	public void enviarMsj() {
 		String message = textField.getText();
+		LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        String formatDateTime = now.format(format);
 		if(!message.isEmpty())
-			cliente.enviarMensaje(usuario+": "+message+"\n");
+			cliente.enviarMensaje("["+formatDateTime+"] "+usuario+": "+message+"\n");
 		return;
 	}
 	
@@ -149,5 +157,14 @@ public class JChatCliente extends JFrame {
 		Clip clip = AudioSystem.getClip();
 		clip.open(audioInputStream);
 		clip.start();
+	}
+	
+	public void unirseSala(int puerto) {
+		String nombre = JOptionPane.showInputDialog("Ingrese nombre de usuario");
+		cliente = new Cliente(puerto,"localhost");
+		cliente.inicializarHiloCliente(iniciar());
+		usuario = nombre;
+		btnEnviar.setEnabled(true);
+		textField.setEditable(true);
 	}
 }

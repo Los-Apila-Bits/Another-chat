@@ -32,7 +32,7 @@ public class Servidor {
 			e.printStackTrace();
 		}
 	}
-	public static void main(String[] args) {
-		new Servidor(20).ejecutar();
+	public int getPuerto() {
+		return this.puerto;
 	}
 }
