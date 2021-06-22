@@ -7,12 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Servidor {
+	private String nombre;
 	private int puerto;
 	private ServerSocket server;
 	private List<Socket> sockets;
 	
-	public Servidor(int puerto) {
+	public Servidor(int puerto,String nombre) {
 		this.puerto = puerto;
+		this.nombre = nombre;
 		try {
 			server = new ServerSocket(this.puerto);
 			sockets = new ArrayList<Socket>();
@@ -34,5 +36,13 @@ public class Servidor {
 	}
 	public int getPuerto() {
 		return this.puerto;
+	}
+	
+	public int getCantConexiones() {
+		return this.sockets.size();
+	}
+	
+	public String getNombre() {
+		return this.nombre;
 	}
 }

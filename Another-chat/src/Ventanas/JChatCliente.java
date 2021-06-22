@@ -1,6 +1,5 @@
 package Ventanas;
 
-import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -15,16 +14,13 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
-import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.awt.event.ActionEvent;
@@ -40,9 +36,6 @@ public class JChatCliente extends JFrame {
 	private JTextField textField;
 	private JButton btnEnviar;
 	private JTextArea textArea;
-	private JMenuBar menuBar;
-	private JMenuItem mntmConectar;
-	private JMenu mnOpciones;
 	private JScrollPane scrollPane;
 //	public static void main(String[] args) {
 //		EventQueue.invokeLater(new Runnable() {
@@ -58,15 +51,20 @@ public class JChatCliente extends JFrame {
 //		});
 //	}
 
-
 	public JChatCliente() {
+		this.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				//cliente.cerrarSocket();
+			}
+		});
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
+
 		textField = new JTextField();
 		textField.setBounds(10, 219, 312, 31);
 		contentPane.add(textField);
@@ -76,11 +74,11 @@ public class JChatCliente extends JFrame {
 				textField.setText("");
 			}
 		});
-		//textField.setEditable(false);
+		// textField.setEditable(false);
 		textField.setColumns(10);
-		
+
 		btnEnviar = new JButton("Enviar");
-		//btnEnviar.setEnabled(false);
+		// btnEnviar.setEnabled(false);
 		btnEnviar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				enviarMsj();
@@ -89,42 +87,23 @@ public class JChatCliente extends JFrame {
 		});
 		btnEnviar.setBounds(335, 219, 89, 31);
 		contentPane.add(btnEnviar);
-		
-		menuBar = new JMenuBar();
-		menuBar.setBounds(0, 0, 434, 22);
-		contentPane.add(menuBar);
-		
-		mnOpciones = new JMenu("Opciones");
-		menuBar.add(mnOpciones);
-		
-		mntmConectar = new JMenuItem("Conectar");
-		mnOpciones.add(mntmConectar);
-		mntmConectar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String nombre = JOptionPane.showInputDialog("Ingrese nombre de usuario");
-				cliente = new Cliente(9001,"localhost");
-				cliente.inicializarHiloCliente(iniciar());
-				usuario = nombre;
-				btnEnviar.setEnabled(true);
-				textField.setEditable(true);
-			}
-		});
-		
+
 		scrollPane = new JScrollPane();
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPane.setBounds(10, 33, 414, 175);
 		contentPane.add(scrollPane);
-		
+
 		textArea = new JTextArea();
 		scrollPane.setViewportView(textArea);
 		textArea.setEditable(false);
-		
+
 	}
+
 	public JChatCliente iniciar() {
 		return this;
 	}
-	
+
 	public void escribirMensajeEnTextArea(String mensaje) {
 		textArea.append(mensaje);
 		try {
@@ -140,17 +119,17 @@ public class JChatCliente extends JFrame {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void enviarMsj() {
 		String message = textField.getText();
 		LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-        String formatDateTime = now.format(format);
-		if(!message.isEmpty())
-			cliente.enviarMensaje("["+formatDateTime+"] "+usuario+": "+message+"\n");
+		DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+		String formatDateTime = now.format(format);
+		if (!message.isEmpty())
+			cliente.enviarMensaje("[" + formatDateTime + "] " + usuario + ": " + message + "\n");
 		return;
 	}
-	
+
 	public void sonidoMsj() throws LineUnavailableException, IOException, UnsupportedAudioFileException {
 		String soundName = "sonidos/sonido_msn.wav";
 		AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(soundName).getAbsoluteFile());
@@ -158,10 +137,10 @@ public class JChatCliente extends JFrame {
 		clip.open(audioInputStream);
 		clip.start();
 	}
-	
+
 	public void unirseSala(int puerto) {
 		String nombre = JOptionPane.showInputDialog("Ingrese nombre de usuario");
-		cliente = new Cliente(puerto,"localhost");
+		cliente = new Cliente(puerto, "localhost");
 		cliente.inicializarHiloCliente(iniciar());
 		usuario = nombre;
 		btnEnviar.setEnabled(true);

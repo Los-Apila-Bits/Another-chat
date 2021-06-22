@@ -6,6 +6,9 @@ import datos.Sala;
 import javax.swing.*;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -15,13 +18,18 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.JLabel;
 import java.awt.Font;
 
-public class JLobby extends JFrame {
-
+public class JLobby extends JFrame {	
+	
+//	private int puerto;
+//	private ServerSocket server;
+//	private List<Socket> sockets;
+	
+	
 	private static final long serialVersionUID = 1L;
 	private Sala sala;
 	private JChatCliente cliente;
 	JList list;
-	JScrollPane listScroller;
+	private static JScrollPane listScroller;
 	DefaultListModel model = new DefaultListModel();
 	private JButton crearSalaButton;
 	private JButton unirseSalaButton;
@@ -69,27 +77,26 @@ public class JLobby extends JFrame {
 		getContentPane().add(crearSalaButton);
 		crearSalaButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				sala.crearSala();
 				String nombreSala = JOptionPane.showInputDialog("Ingrese el nombre de la sala");
-				model.addElement(nombreSala);
+				sala.crearSala(nombreSala);
+				model.addElement(nombreSala + " (0)");
 				list.setModel(model);
 			}
 		});
 	}
 
 	public void iniButtonUnirse() {
-		unirseSalaButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-				run();
-			}
-		});
 		unirseSalaButton.setBounds(130, 216, 89, 23);
 		getContentPane().add(unirseSalaButton);
 		JLabel lblSalas = new JLabel("Salas");
 		lblSalas.setFont(new Font("Arial", Font.PLAIN, 12));
 		lblSalas.setBounds(10, 13, 46, 17);
 		getContentPane().add(lblSalas);
+		unirseSalaButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				run();
+			}
+		});
 	}
 
 	public void run() {
@@ -98,11 +105,11 @@ public class JLobby extends JFrame {
 			if (list.getSelectedIndex() == -1)
 				JOptionPane.showMessageDialog(null, "Seleccione una sala");
 			else {
+				model.set(list.getSelectedIndex(), sala.getNombreSala(list.getSelectedIndex())+" ("+(sala.getCantidadPersonas(list.getSelectedIndex())+1)+")");
 				cliente.unirseSala(9000 + list.getSelectedIndex());
 				cliente.setTitle("Chat");
 				cliente.setVisible(true);
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
